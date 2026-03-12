@@ -21,23 +21,6 @@ It does **not** fully solve:
 * DNS leak prevention in all cases
 * gateway/router mode for forwarding traffic from other hosts
 
-## Layout
-
-```text
-.
-├── README.md
-├── setup.sh
-├── remove.sh
-├── status.sh
-├── config.env.example
-├── files/
-│   └── redsocks.conf.template
-├── systemd/
-│   └── redsocks-transparent.service
-└── tests/
-    └── smoke-test.sh
-```
-
 ## Requirements
 
 * Ubuntu 24.04
@@ -47,6 +30,22 @@ It does **not** fully solve:
 * `systemd`
 
 ## Quick start
+
+### Install (remote, one-liner)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bgrewell/toolbox/main/tools/transparent-socks/install.sh \
+  | sudo bash -s -- --proxy 203.0.113.10 --proxy-port 1080
+```
+
+### Uninstall (remote, one-liner)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/bgrewell/toolbox/main/tools/transparent-socks/uninstall.sh \
+  | sudo bash
+```
+
+### Install (local clone)
 
 Copy and edit the config:
 
@@ -73,40 +72,47 @@ Remove everything:
 sudo ./remove.sh ./config.env
 ```
 
-## Config options
+## Install options
 
-### Proxy settings
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--proxy HOST` | Upstream proxy host (required) | — |
+| `--proxy-port PORT` | Upstream proxy port | `1080` |
+| `--proxy-type TYPE` | `socks4`, `socks5`, or `http-connect` | `socks5` |
+| `--proxy-user USER` | Proxy username | — |
+| `--proxy-pass PASS` | Proxy password | — |
+| `--redsocks-ip IP` | Local redsocks listen IP | `127.0.0.1` |
+| `--redsocks-port PORT` | Local redsocks listen port | `18086` |
+| `--chain NAME` | iptables NAT chain name | `REDSOCKS` |
+| `--bypass-uid UID` | UID whose traffic bypasses proxy | — |
+| `--bypass-cidrs "CIDRS"` | Space-separated CIDRs to bypass | — |
+| `--bypass-ports "PORTS"` | Space-separated ports to bypass | `22` |
 
-* `PROXY_TYPE`
-  Supported by this tool: `socks5`, `socks4`, `http-connect`
+## Uninstall options
 
-* `PROXY_HOST`
-  IP or hostname of the upstream proxy
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--chain NAME` | iptables NAT chain name to remove | `REDSOCKS` |
+| `--purge` | Also remove redsocks config file | off |
 
-* `PROXY_PORT`
-  Upstream proxy port
+## Layout
 
-* `PROXY_USER`
-
-* `PROXY_PASS`
-
-### redsocks listener
-
-* `REDSOCKS_LOCAL_IP`
-* `REDSOCKS_LOCAL_PORT`
-
-### iptables behavior
-
-* `CHAIN_NAME`
-* `BYPASS_UID`
-* `EXTRA_BYPASS_CIDRS`
-* `EXTRA_BYPASS_PORTS`
-
-### generated files
-
-* `REDSOCKS_CONF`
-* `SYSTEMD_UNIT_DEST`
-* `IPTABLES_SAVE_FILE`
+```text
+.
+├── README.md
+├── install.sh           # curl-friendly installer with CLI flags
+├── uninstall.sh         # curl-friendly uninstaller
+├── setup.sh             # local installer (reads config.env)
+├── remove.sh            # local uninstaller (reads config.env)
+├── status.sh
+├── config.env.example
+├── files/
+│   └── redsocks.conf.template
+├── systemd/
+│   └── redsocks-transparent.service
+└── tests/
+    └── smoke-test.sh
+```
 
 ## Notes
 
