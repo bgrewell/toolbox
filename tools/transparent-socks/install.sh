@@ -126,20 +126,12 @@ if ((${#proxy_ips[@]} == 0)); then
 fi
 log "  Proxy host resolves to: ${proxy_ips[*]}"
 
-# Test TCP connectivity to the proxy
+# Test TCP connectivity to the proxy using bash /dev/tcp (avoids nc variant differences)
 probe_ip="${proxy_ips[0]}"
-if command -v nc >/dev/null 2>&1; then
-  if ! nc -z -w 5 "$probe_ip" "$PROXY_PORT" 2>/dev/null; then
-    die "Cannot connect to proxy at ${probe_ip}:${PROXY_PORT} (TCP connection refused or timed out)"
-  fi
-  log "  TCP connection to ${probe_ip}:${PROXY_PORT} succeeded"
-elif command -v bash >/dev/null 2>&1; then
-  if ! (echo >/dev/tcp/"$probe_ip"/"$PROXY_PORT") 2>/dev/null; then
-    die "Cannot connect to proxy at ${probe_ip}:${PROXY_PORT} (TCP connection refused or timed out)"
-  fi
+if (echo >/dev/tcp/"$probe_ip"/"$PROXY_PORT") 2>/dev/null; then
   log "  TCP connection to ${probe_ip}:${PROXY_PORT} succeeded"
 else
-  warn "Neither nc nor /dev/tcp available — skipping proxy connectivity check"
+  die "Cannot connect to proxy at ${probe_ip}:${PROXY_PORT} (TCP connection refused or timed out)"
 fi
 
 # Check for existing iptables chain that might conflict
