@@ -1,0 +1,16 @@
+base {
+  log_debug = off;
+  log_info = on;
+  log = "syslog:daemon";
+  daemon = on;
+  redirector = iptables;
+}
+
+redsocks {
+  local_ip = __REDSOCKS_LOCAL_IP__;
+  local_port = __REDSOCKS_LOCAL_PORT__;
+  ip = __PROXY_HOST__;
+  port = __PROXY_PORT__;
+  type = __PROXY_TYPE__;
+__AUTH_BLOCK__
+}
