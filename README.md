@@ -17,6 +17,7 @@ toolbox/
 
 | Tool | Description | Platform |
 |------|-------------|----------|
+| [netcheck](tools/netcheck/) | Network interface info and connectivity testing | Linux |
 | [transparent-socks](tools/transparent-socks/) | Transparent outbound TCP proxying via `redsocks` and `iptables` | Linux (Ubuntu 24.04) |
 
 ## Usage
