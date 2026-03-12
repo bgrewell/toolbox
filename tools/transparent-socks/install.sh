@@ -128,7 +128,7 @@ log "  Proxy host resolves to: ${proxy_ips[*]}"
 
 # Test TCP connectivity to the proxy using bash /dev/tcp (avoids nc variant differences)
 probe_ip="${proxy_ips[0]}"
-if (echo >/dev/tcp/"$probe_ip"/"$PROXY_PORT") 2>/dev/null; then
+if (exec 3<>/dev/tcp/"$probe_ip"/"$PROXY_PORT" && exec 3>&-) 2>/dev/null; then
   log "  TCP connection to ${probe_ip}:${PROXY_PORT} succeeded"
 else
   die "Cannot connect to proxy at ${probe_ip}:${PROXY_PORT} (TCP connection refused or timed out)"
