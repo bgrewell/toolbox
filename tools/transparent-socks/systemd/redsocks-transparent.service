@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 Type=forking
-ExecStart=/usr/bin/redsocks -c /etc/redsocks.conf
+ExecStart=/usr/sbin/redsocks -c /etc/redsocks.conf
 ExecStop=/bin/kill -TERM $MAINPID
 Restart=on-failure
 RestartSec=2
